@@ -1,6 +1,6 @@
 # SvelteKit Notes
 
-A simple local note-taking app built with SvelteKit.
+A simple local note-taking app built with SvelteKit and TailwindCSS.
 
 ## Features
 

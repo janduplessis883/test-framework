@@ -142,50 +142,74 @@
   <meta name="description" content="A simple local note-taking app built with SvelteKit." />
 </svelte:head>
 
-<main class="workspace">
-  <section class="sidebar" aria-label="Notes">
-    <header class="sidebar-header">
+<main
+  class="mx-auto grid min-h-dvh w-full overflow-hidden border-[#25312e24] bg-[#fffcf5c7] text-[#25312e] shadow-[0_24px_70px_rgba(37,49,46,0.12)] backdrop-blur-xl md:my-4 md:min-h-[calc(100vh-2rem)] md:w-[min(1180px,calc(100vw-2rem))] md:grid-cols-[minmax(18rem,24rem)_minmax(0,1fr)] md:rounded-lg md:border"
+>
+  <section
+    class="flex min-h-0 max-h-[45dvh] flex-col border-b border-[#25312e1f] bg-[#f9f5ebdb] md:max-h-none md:border-r md:border-b-0"
+    aria-label="Notes"
+  >
+    <header class="flex items-center justify-between gap-4 px-4 pt-4 pb-3 md:px-5 md:pt-6 md:pb-3.5">
       <div>
-        <p class="eyebrow">{noteCountLabel}</p>
-        <h1>Notes</h1>
+        <p class="mb-1 text-xs font-bold text-[#6d776f] uppercase">{noteCountLabel}</p>
+        <h1 class="text-[clamp(2rem,12vw,3.9rem)] leading-none font-black tracking-normal md:text-[clamp(2rem,5vw,3.9rem)]">Notes</h1>
       </div>
-      <button class="icon-button primary" aria-label="Create note" title="Create note" onclick={createNote}>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
+      <button
+        class="grid size-11 shrink-0 cursor-pointer place-items-center rounded-lg border border-[#37675c] bg-[#37675c] text-[#fffaf0] transition hover:-translate-y-0.5 hover:border-[#25312e57] md:size-10"
+        aria-label="Create note"
+        title="Create note"
+        onclick={createNote}
+      >
+        <svg class="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 5v14M5 12h14" />
         </svg>
       </button>
     </header>
 
-    <label class="search">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
+    <label
+      class="mx-4 mb-3 flex items-center gap-2.5 rounded-lg border border-[#25312e24] bg-[#fffaf0d1] px-3 text-[#5e6a63] md:mx-5 md:mb-3.5"
+    >
+      <svg class="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="11" cy="11" r="7" />
         <path d="m16 16 4 4" />
       </svg>
-      <input bind:value={query} type="search" aria-label="Search notes" placeholder="Search" />
+      <input
+        class="h-12 w-full min-w-0 border-0 bg-transparent text-[#25312e] outline-none md:h-11"
+        bind:value={query}
+        type="search"
+        aria-label="Search notes"
+        placeholder="Search"
+      />
     </label>
 
-    <div class="note-list">
+    <div
+      class="grid min-h-0 auto-cols-[minmax(15rem,78vw)] grid-flow-col gap-2 overflow-x-auto px-4 pb-4 md:grid-flow-row md:auto-cols-auto md:overflow-auto md:px-3.5"
+    >
       {#each filteredNotes as note}
         <button
-          class:active={activeNote?.id === note.id}
-          class="note-row"
+          class={[
+            'grid min-h-32 w-full cursor-pointer gap-2 rounded-lg border p-4 text-left transition hover:border-[#25312e1f] hover:bg-[#fffaf0]',
+            activeNote?.id === note.id
+              ? 'border-[#25312e1f] bg-[#fffaf0] shadow-[inset_4px_0_0_#d8b25f]'
+              : 'border-transparent bg-transparent'
+          ]}
           type="button"
           onclick={() => (activeId = note.id)}
         >
-          <span class="note-row-top">
-            <span class="note-title">{note.title || 'Untitled note'}</span>
+          <span class="flex items-center justify-between gap-2.5">
+            <span class="truncate text-base font-extrabold">{note.title || 'Untitled note'}</span>
             {#if note.pinned}
-              <span class="pin-dot" aria-label="Pinned"></span>
+              <span class="size-2 shrink-0 rounded-full bg-[#d8b25f]" aria-label="Pinned"></span>
             {/if}
           </span>
-          <span class="note-preview">{note.body || 'No content yet'}</span>
-          <span class="note-meta">
+          <span class="line-clamp-2 min-h-11 overflow-hidden text-sm leading-6 text-[#59645f]">{note.body || 'No content yet'}</span>
+          <span class="flex items-center justify-between gap-2.5 text-xs font-bold text-[#7f867e]">
             <span>{note.tag || 'Inbox'}</span>
             <span>{formatUpdated(note.updatedAt)}</span>
           </span>
         </button>
       {:else}
-        <div class="empty-list">
+        <div class="grid min-h-48 place-items-center content-center gap-2 text-center text-[#6d776f]">
           <strong>No matches</strong>
           <span>Try a different search.</span>
         </div>
@@ -193,29 +217,41 @@
     </div>
   </section>
 
-  <section class="editor" aria-label="Editor">
+  <section
+    class="grid min-h-[55dvh] min-w-0 grid-rows-[auto_auto_1fr] bg-[linear-gradient(rgba(255,250,240,0.88),rgba(255,250,240,0.88)),repeating-linear-gradient(0deg,transparent_0_35px,rgba(37,49,46,0.08)_36px)] p-4 pb-6 md:min-h-0 md:p-6"
+    aria-label="Editor"
+  >
     {#if activeNote}
-      <div class="editor-toolbar">
+      <div class="mb-5 flex items-center justify-between gap-4 md:mb-6">
         <input
-          class="tag-input"
+          class="h-11 w-[min(14rem,54vw)] rounded-lg border border-[#25312e2e] bg-[#fffaf0d1] px-3 text-sm font-extrabold text-[#37675c] md:h-10"
           aria-label="Note tag"
           value={activeNote.tag}
           oninput={(event) => updateActiveNote('tag', event.currentTarget.value)}
         />
-        <div class="tool-actions">
+        <div class="flex gap-2">
           <button
-            class:pressed={activeNote.pinned}
-            class="icon-button"
+            class={[
+              'grid size-11 shrink-0 cursor-pointer place-items-center rounded-lg border transition hover:-translate-y-0.5 hover:border-[#25312e57] md:size-10',
+              activeNote.pinned
+                ? 'border-[#37675c] bg-[#37675c] text-[#fffaf0]'
+                : 'border-[#25312e2e] bg-[#fffaf0]'
+            ]}
             aria-label={activeNote.pinned ? 'Unpin note' : 'Pin note'}
             title={activeNote.pinned ? 'Unpin note' : 'Pin note'}
             onclick={togglePinned}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
+            <svg class="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
               <path d="m15 4 5 5-4 4v5l-1 1-4-4-5 5-2-2 5-5-4-4 1-1h5z" />
             </svg>
           </button>
-          <button class="icon-button danger" aria-label="Delete note" title="Delete note" onclick={deleteActiveNote}>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
+          <button
+            class="grid size-11 shrink-0 cursor-pointer place-items-center rounded-lg border border-[#25312e2e] bg-[#fffaf0] transition hover:-translate-y-0.5 hover:border-[#a34f45] hover:text-[#8f352b] md:size-10"
+            aria-label="Delete note"
+            title="Delete note"
+            onclick={deleteActiveNote}
+          >
+            <svg class="size-5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />
             </svg>
           </button>
@@ -223,350 +259,28 @@
       </div>
 
       <input
-        class="title-input"
+        class="mb-4 w-full min-w-0 border-0 bg-transparent text-[clamp(2rem,12vw,5.4rem)] leading-none font-black tracking-normal text-[#25312e] outline-none md:mb-5 md:text-[clamp(2.1rem,8vw,5.4rem)]"
         aria-label="Note title"
         value={activeNote.title}
         oninput={(event) => updateActiveNote('title', event.currentTarget.value)}
       />
 
       <textarea
+        class="min-h-72 w-full min-w-0 resize-none border-0 bg-transparent text-base leading-7 text-[#39433f] outline-none md:min-h-0 md:text-lg"
         aria-label="Note body"
         value={activeNote.body}
         oninput={(event) => updateActiveNote('body', event.currentTarget.value)}
         placeholder="Start writing..."
       ></textarea>
     {:else}
-      <div class="empty-editor">
-        <h2>No note selected</h2>
-        <button class="create-button" type="button" onclick={createNote}>Create note</button>
+      <div class="grid min-h-[60vh] place-items-center content-center gap-2 text-center text-[#6d776f]">
+        <h2 class="m-0 text-xl font-extrabold text-[#25312e]">No note selected</h2>
+        <button
+          class="min-h-11 cursor-pointer rounded-lg border border-[#37675c] bg-[#37675c] px-4 text-[#fffaf0]"
+          type="button"
+          onclick={createNote}>Create note</button
+        >
       </div>
     {/if}
   </section>
 </main>
-
-<style>
-  .workspace {
-    display: grid;
-    grid-template-columns: minmax(18rem, 24rem) minmax(0, 1fr);
-    gap: 0;
-    width: min(1180px, calc(100vw - 32px));
-    min-height: calc(100vh - 32px);
-    margin: 16px auto;
-    overflow: hidden;
-    border: 1px solid rgba(37, 49, 46, 0.14);
-    border-radius: 8px;
-    background: rgba(255, 252, 245, 0.78);
-    box-shadow: 0 24px 70px rgba(37, 49, 46, 0.12);
-    backdrop-filter: blur(18px);
-  }
-
-  .sidebar {
-    display: flex;
-    min-height: 0;
-    flex-direction: column;
-    border-right: 1px solid rgba(37, 49, 46, 0.12);
-    background: rgba(249, 245, 235, 0.86);
-  }
-
-  .sidebar-header,
-  .editor-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .sidebar-header {
-    padding: 24px 22px 14px;
-  }
-
-  .eyebrow {
-    margin: 0 0 4px;
-    color: #6d776f;
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(2rem, 5vw, 3.9rem);
-    line-height: 0.96;
-    letter-spacing: 0;
-  }
-
-  .icon-button {
-    display: inline-grid;
-    width: 2.55rem;
-    height: 2.55rem;
-    flex: 0 0 auto;
-    place-items: center;
-    border: 1px solid rgba(37, 49, 46, 0.18);
-    border-radius: 8px;
-    background: #fffaf0;
-    cursor: pointer;
-    transition:
-      transform 160ms ease,
-      border-color 160ms ease,
-      background 160ms ease;
-  }
-
-  .icon-button:hover {
-    transform: translateY(-1px);
-    border-color: rgba(37, 49, 46, 0.34);
-  }
-
-  .icon-button.primary,
-  .icon-button.pressed {
-    border-color: #37675c;
-    background: #37675c;
-    color: #fffaf0;
-  }
-
-  .icon-button.danger:hover {
-    border-color: #a34f45;
-    color: #8f352b;
-  }
-
-  .icon-button svg,
-  .search svg {
-    width: 1.15rem;
-    height: 1.15rem;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-width: 2;
-  }
-
-  .search {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0 22px 14px;
-    padding: 0 13px;
-    border: 1px solid rgba(37, 49, 46, 0.14);
-    border-radius: 8px;
-    background: rgba(255, 250, 240, 0.82);
-    color: #5e6a63;
-  }
-
-  .search input {
-    width: 100%;
-    min-width: 0;
-    height: 2.75rem;
-    border: 0;
-    background: transparent;
-    color: #25312e;
-  }
-
-  .search input:focus {
-    outline: 0;
-  }
-
-  .note-list {
-    display: grid;
-    gap: 8px;
-    min-height: 0;
-    padding: 0 14px 14px;
-    overflow: auto;
-  }
-
-  .note-row {
-    display: grid;
-    gap: 7px;
-    width: 100%;
-    min-height: 8.3rem;
-    padding: 15px;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    background: transparent;
-    text-align: left;
-    cursor: pointer;
-  }
-
-  .note-row:hover,
-  .note-row.active {
-    border-color: rgba(37, 49, 46, 0.12);
-    background: #fffaf0;
-  }
-
-  .note-row.active {
-    box-shadow: inset 4px 0 0 #d8b25f;
-  }
-
-  .note-row-top,
-  .note-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .note-title {
-    overflow: hidden;
-    font-size: 1rem;
-    font-weight: 800;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .pin-dot {
-    width: 0.52rem;
-    height: 0.52rem;
-    flex: 0 0 auto;
-    border-radius: 999px;
-    background: #d8b25f;
-  }
-
-  .note-preview {
-    display: -webkit-box;
-    overflow: hidden;
-    min-height: 2.9rem;
-    color: #59645f;
-    font-size: 0.9rem;
-    line-height: 1.55;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-  }
-
-  .note-meta {
-    color: #7f867e;
-    font-size: 0.78rem;
-    font-weight: 700;
-  }
-
-  .editor {
-    display: grid;
-    grid-template-rows: auto auto 1fr;
-    min-width: 0;
-    min-height: 0;
-    padding: 24px;
-    background:
-      linear-gradient(rgba(255, 250, 240, 0.88), rgba(255, 250, 240, 0.88)),
-      repeating-linear-gradient(0deg, transparent 0 35px, rgba(37, 49, 46, 0.08) 36px);
-  }
-
-  .editor-toolbar {
-    margin-bottom: 22px;
-  }
-
-  .tool-actions {
-    display: flex;
-    gap: 8px;
-  }
-
-  .tag-input {
-    width: min(14rem, 50vw);
-    height: 2.45rem;
-    padding: 0 12px;
-    border: 1px solid rgba(37, 49, 46, 0.18);
-    border-radius: 8px;
-    background: rgba(255, 250, 240, 0.82);
-    color: #37675c;
-    font-size: 0.88rem;
-    font-weight: 800;
-  }
-
-  .title-input,
-  textarea {
-    width: 100%;
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    color: #25312e;
-  }
-
-  .title-input {
-    margin-bottom: 18px;
-    font-size: clamp(2.1rem, 8vw, 5.4rem);
-    font-weight: 850;
-    line-height: 0.98;
-    letter-spacing: 0;
-  }
-
-  .title-input:focus,
-  textarea:focus {
-    outline: 0;
-  }
-
-  textarea {
-    min-height: 0;
-    resize: none;
-    color: #39433f;
-    font-size: 1.08rem;
-    line-height: 1.7;
-  }
-
-  .empty-list,
-  .empty-editor {
-    display: grid;
-    place-items: center;
-    align-content: center;
-    gap: 8px;
-    min-height: 12rem;
-    color: #6d776f;
-    text-align: center;
-  }
-
-  .empty-editor {
-    min-height: 60vh;
-  }
-
-  .empty-editor h2 {
-    margin: 0;
-    color: #25312e;
-  }
-
-  .create-button {
-    min-height: 2.6rem;
-    padding: 0 16px;
-    border: 1px solid #37675c;
-    border-radius: 8px;
-    background: #37675c;
-    color: #fffaf0;
-    cursor: pointer;
-  }
-
-  @media (max-width: 760px) {
-    .workspace {
-      grid-template-columns: 1fr;
-      width: 100%;
-      min-height: 100vh;
-      margin: 0;
-      border-width: 0;
-      border-radius: 0;
-    }
-
-    .sidebar {
-      max-height: 45vh;
-      border-right: 0;
-      border-bottom: 1px solid rgba(37, 49, 46, 0.12);
-    }
-
-    .sidebar-header {
-      padding: 18px 16px 12px;
-    }
-
-    .search {
-      margin-inline: 16px;
-    }
-
-    .note-list {
-      grid-auto-flow: column;
-      grid-auto-columns: minmax(15rem, 78vw);
-      padding-inline: 16px;
-      overflow-x: auto;
-    }
-
-    .note-row {
-      min-height: 8rem;
-    }
-
-    .editor {
-      min-height: 55vh;
-      padding: 18px 16px 24px;
-    }
-  }
-</style>
